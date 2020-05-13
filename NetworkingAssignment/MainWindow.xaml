@@ -5,15 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NetworkingAssignment"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Zodiac Client" Height="450" Width="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        
-        <md:ColorPicker Grid.Column="0" x:Name="colpick"></md:ColorPicker>
-        
+
+        <ContentControl prism:RegionManager.RegionName="MainRegion" />
+
     </Grid>
 </Window>

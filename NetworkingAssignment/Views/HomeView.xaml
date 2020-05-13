@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="NetworkingAssignment.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NetworkingAssignment.Views"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="2*" />
+            </Grid.RowDefinitions>
+
+            <Label FontSize="70" HorizontalAlignment="Center" VerticalAlignment="Bottom">ZODIAC</Label>
+
+            <Image Source="D:\University\Year 2\NetworkingAssignment\icons\zodiacs\aquarius.png" Grid.Row="1" Margin="100,0,100,0" VerticalAlignment="Top"/>
+        </Grid>
+
+        <md:Card Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="30,10,30,20">
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Label FontSize="40">Connect</Label>
+
+                <StackPanel Margin="0,10,0,0" Grid.Row="1" Orientation="Vertical">
+                    <Label>IP Address</Label>
+                    <TextBox Text="{Binding IpAddress}" />
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0" Grid.Row="2" Orientation="Vertical">
+                    <Label>Port</Label>
+                    <TextBox Text="{Binding Port}" />
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0" Grid.Row="3" Orientation="Vertical">
+                    <Label>Username</Label>
+                    <TextBox Text="{Binding Username}" />
+                </StackPanel>
+
+                <Button Grid.Row="4" Margin="0,10,0,0" Command="{Binding ConnectCommand}">Connect</Button>
+
+                <Label Grid.Row="5" Foreground="Red" Content="{Binding ErrorMessage}" />
+
+            </Grid>
+            
+        </md:Card>
+        
+    </Grid>
+</UserControl>

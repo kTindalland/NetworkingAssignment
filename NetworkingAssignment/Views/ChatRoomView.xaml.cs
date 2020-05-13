@@ -14,14 +14,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NetworkingAssignment
+namespace NetworkingAssignment.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ChatRoomView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ChatRoomView : UserControl
     {
-        public MainWindow(MainWindowViewModel viewmodel)
+        public ChatRoomView(ChatRoomViewModel viewmodel)
         {
             DataContext = viewmodel;
             InitializeComponent();

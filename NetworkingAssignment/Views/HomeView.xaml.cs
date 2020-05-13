@@ -1,5 +1,4 @@
-﻿using NetworkingAssignment.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,15 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using NetworkingAssignment.ViewModels;
 
-namespace NetworkingAssignment
+namespace NetworkingAssignment.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class HomeView : UserControl
     {
-        public MainWindow(MainWindowViewModel viewmodel)
+        public HomeView(HomeViewModel viewmodel)
         {
             DataContext = viewmodel;
             InitializeComponent();
