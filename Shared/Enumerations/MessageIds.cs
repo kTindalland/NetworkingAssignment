@@ -9,6 +9,7 @@ namespace Shared.Enumerations
     public enum MessageIds
     {
         Heartbeat = 1,
-        JoinChatroom = 2
+        JoinChatroom = 2,
+        ChatroomAcceptance = 3
     }
 }
