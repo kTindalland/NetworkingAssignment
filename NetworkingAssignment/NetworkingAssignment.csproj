@@ -98,7 +98,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Services\NetworkClientService.cs" />
-    <Compile Include="Services\NetworkCredentialsPatternValidationService.cs" />
     <Compile Include="ViewModels\ChatRoomViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -164,6 +163,10 @@
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{644cca7b-33b5-4630-a0d6-1bd2d6d9b103}</Project>
       <Name>Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{f291bf07-afa9-4332-8969-e2d1c807a52d}</Project>
+      <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

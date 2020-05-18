@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{644CCA7B-33B5-4630-A0D6-1BD2D6D9B103}</ProjectGuid>
+    <ProjectGuid>{F291BF07-AFA9-4332-8969-E2D1C807A52D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Interfaces</RootNamespace>
-    <AssemblyName>Interfaces</AssemblyName>
+    <RootNamespace>Shared</RootNamespace>
+    <AssemblyName>Shared</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,14 +41,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enumerations\MessageIds.cs" />
+    <Compile Include="Messages\HeartbeatMessage.cs" />
+    <Compile Include="Messages\JoinChatroomMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IMessageDecoderService.cs" />
-    <Compile Include="Services\IMessageHandlingService.cs" />
-    <Compile Include="Services\INetworkClientService.cs" />
-    <Compile Include="Services\INetworkCredentialsPatternValidationService.cs" />
-    <Compile Include="Services\IUserTrackerService.cs" />
-    <Compile Include="Shared\IMessage.cs" />
-    <Compile Include="Structures\IUser.cs" />
+    <Compile Include="Services\MessageDecoderService.cs" />
+    <Compile Include="Services\NetworkCredentialsPatternValidationService.cs" />
+    <Compile Include="Utilities\StringPacker.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{644cca7b-33b5-4630-a0d6-1bd2d6d9b103}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

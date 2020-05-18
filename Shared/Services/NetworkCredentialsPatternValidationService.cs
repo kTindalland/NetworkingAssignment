@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Interfaces.Services;
 
-namespace NetworkingAssignment.Services
+namespace Shared.Services
 {
     public class NetworkCredentialsPatternValidationService : INetworkCredentialsPatternValidationService
     {

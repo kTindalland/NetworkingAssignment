@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Interfaces.Services;
+using Shared.Messages;
 
 namespace NetworkingAssignment.Services
 {
@@ -32,20 +33,41 @@ namespace NetworkingAssignment.Services
             client.Connect(ipEndpoint);
 
             var stream = client.GetStream();
-            var myReader = new StreamReader(stream);
-            var myWriter = new StreamWriter(stream);
-            myWriter.AutoFlush = true;
 
-            Debug.WriteLine(myReader.ReadLine());
+            // for testing purposes send over join chat room message
+            var msg = new JoinChatroomMessage() { Username = username };
+            var data = msg.Pack();
 
-
-
-            for (int i = 0; i < 5; i++)
+            await stream.WriteAsync(data, 0, data.Length);
+            stream.Flush();
+            var socket = client.Client;
+            while (!(socket.Poll(0, SelectMode.SelectRead) && socket.Available == 0))
             {
-                myWriter.WriteLine($"{username} : {i.ToString()}");
-                Thread.Sleep(100);
-            }
+                if (stream.DataAvailable)
+                {
+                    int twoKiloBytes = 2048;
+                    byte[] buffer = new byte[twoKiloBytes];
 
+                    int messageLength = await stream.ReadAsync(buffer, 0, twoKiloBytes);
+                    var flushTask = stream.FlushAsync();
+
+                    byte[] actualMessage = buffer.Take(messageLength).ToArray();
+
+                    //Task.Run(() => _messageHandlingService.HandleMessage(actualMessage, socket));
+
+                    //Console.WriteLine($"> Message received: username {resultingMessage.GetType()}");
+
+                    await flushTask;
+                }
+
+                // Send out heartbeat
+                var heartbeat = new HeartbeatMessage();
+                var beatData = heartbeat.Pack();
+                await stream.WriteAsync(beatData, 0, beatData.Length);
+                await stream.FlushAsync();
+                Thread.Sleep(1000);
+                
+            }
 
             client.Close();
 

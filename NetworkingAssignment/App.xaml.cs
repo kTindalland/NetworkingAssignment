@@ -10,6 +10,7 @@ using NetworkingAssignment.Services;
 using NetworkingAssignment.Views;
 using Prism.Ioc;
 using Prism.Unity;
+using Shared.Services;
 
 namespace NetworkingAssignment
 {
