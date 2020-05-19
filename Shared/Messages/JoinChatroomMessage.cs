@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.Enumerations;
 
 namespace Shared.Messages
 {
@@ -15,13 +16,15 @@ namespace Shared.Messages
 
         public JoinChatroomMessage()
         {
-            Id = 2;
+            Id = (int)MessageIds.JoinChatroom;
         }
 
         public byte[] Pack()
         {
-            var package = new List<byte>();
-            package.Add(Id);
+            var package = new List<byte>
+            {
+                Id
+            };
             package.AddRange(StringPacker.PackString(Username));
 
             return package.ToArray();

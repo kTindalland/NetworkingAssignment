@@ -33,7 +33,6 @@ namespace NetworkingAssignment
             containerRegistry.RegisterSingleton<INetworkClientService, NetworkClientService>();
             containerRegistry.RegisterSingleton<IMessageHandlingService, MessageHandlingService>();
             containerRegistry.RegisterSingleton<IMessageQueueService, MessageQueueService>();
-            containerRegistry.Register<IMessageDecoderService, MessageDecoderService>();
         }
     }
 }

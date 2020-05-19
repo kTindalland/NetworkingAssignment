@@ -15,27 +15,27 @@ namespace Server.Services
     // SERVER MESSAGE HANDLING
     public class MessageHandlingService : IServerMessageHandlingService
     {
-        private readonly IMessageDecoderService _messageDecoder;
         private readonly IUserTrackerService _userTracker;
 
-        public MessageHandlingService(IMessageDecoderService messageDecoder, IUserTrackerService userTracker)
+        public MessageHandlingService(IUserTrackerService userTracker)
         {
-            _messageDecoder = messageDecoder;
             _userTracker = userTracker;
         }
 
         public void HandleMessage(byte[] message, Socket socket, NetworkStream stream)
         {
-            var decodedMessage = _messageDecoder.DecodeMessage(message);
-
-
-            switch((MessageIds)decodedMessage.Id)
+            IMessage decodedMessage;
+            switch((MessageIds)message[0])
             {
                 case MessageIds.Heartbeat:
+                    decodedMessage = new HeartbeatMessage();
+                    decodedMessage.Unpack(message);
                     TakeAction((HeartbeatMessage)decodedMessage, socket);
                     break;
 
                 case MessageIds.JoinChatroom:
+                    decodedMessage = new JoinChatroomMessage();
+                    decodedMessage.Unpack(message);
                     TakeAction((JoinChatroomMessage)decodedMessage, socket, stream);
                     break;
 

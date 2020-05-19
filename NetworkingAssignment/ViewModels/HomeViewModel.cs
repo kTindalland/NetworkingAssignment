@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace NetworkingAssignment.ViewModels
 {
@@ -26,6 +27,7 @@ namespace NetworkingAssignment.ViewModels
         private string _port;
         private string _username;
         private string _errorMessage;
+        private Dispatcher _mainDispatcher;
 
         #endregion
 
@@ -93,6 +95,7 @@ namespace NetworkingAssignment.ViewModels
             ConnectCommand = new DelegateCommand(Connect);
             ErrorMessage = "";
 
+            _mainDispatcher = Dispatcher.CurrentDispatcher;
 
             _eventAggregator.GetEvent<ChatroomAcceptanceEvent>().Subscribe(OnChatroomAcceptance);
         }
@@ -101,7 +104,7 @@ namespace NetworkingAssignment.ViewModels
         {
             if (payload.Accepted == 1)
             {
-                _regionManager.RequestNavigate("MainRegion", "ChatRoom");
+                _mainDispatcher.Invoke(() => { _regionManager.RequestNavigate("MainRegion", "ChatRoom"); });
             }
             else
             {

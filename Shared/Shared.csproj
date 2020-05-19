@@ -46,7 +46,6 @@
     <Compile Include="Messages\HeartbeatMessage.cs" />
     <Compile Include="Messages\JoinChatroomMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\MessageDecoderService.cs" />
     <Compile Include="Services\MessageQueueService.cs" />
     <Compile Include="Services\NetworkCredentialsPatternValidationService.cs" />
     <Compile Include="Utilities\StringPacker.cs" />

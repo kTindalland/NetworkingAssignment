@@ -29,7 +29,6 @@ namespace Server
             // Register types
             container.RegisterType<Server>();
             container.RegisterType<INetworkCredentialsPatternValidationService, NetworkCredentialsPatternValidationService>();
-            container.RegisterType<IMessageDecoderService, MessageDecoderService>();
             container.RegisterType<IServerMessageHandlingService, MessageHandlingService>();
             container.RegisterSingleton<IUserTrackerService, UserTrackerService>();
 

@@ -1,4 +1,5 @@
 ﻿using Interfaces.Services;
+using Interfaces.Shared;
 using NetworkingAssignment.Events;
 using Prism.Events;
 using Prism.Regions;
@@ -18,18 +19,15 @@ namespace NetworkingAssignment.Services
 {
     public class MessageHandlingService : IMessageHandlingService
     {
-        private readonly IMessageDecoderService _decoderService;
         private readonly IMessageQueueService _queueService;
         private readonly IEventAggregator _eventAggregator;
         private readonly object _heartbeatLock;
         private bool _alive;
 
         public MessageHandlingService(
-            IMessageDecoderService decoderService,
             IMessageQueueService queueService,
             IEventAggregator eventAggregator)
         {
-            _decoderService = decoderService;
             _queueService = queueService;
             _eventAggregator = eventAggregator;
             _alive = false;
@@ -40,12 +38,12 @@ namespace NetworkingAssignment.Services
 
         public void HandleMessage(byte[] message, Socket socket)
         {
-            var decodedMessage = _decoderService.DecodeMessage(message);
-
-
-            switch ((MessageIds)decodedMessage.Id)
+            IMessage decodedMessage;
+            switch ((MessageIds)message[0])
             {
                 case MessageIds.ChatroomAcceptance:
+                    decodedMessage = new ChatroomAcceptanceMessage();
+                    decodedMessage.Unpack(message);
                     TakeAction((ChatroomAcceptanceMessage)decodedMessage);
                     break;
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.Enumerations;
 
 namespace Shared.Messages
 {
@@ -14,7 +15,7 @@ namespace Shared.Messages
 
         public HeartbeatMessage()
         {
-            Id = 1;
+            Id = (int)MessageIds.Heartbeat;
         }
 
         public byte[] Pack()

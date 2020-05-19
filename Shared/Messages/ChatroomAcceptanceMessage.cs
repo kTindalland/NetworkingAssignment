@@ -1,4 +1,5 @@
 ﻿using Interfaces.Shared;
+using Shared.Enumerations;
 using Shared.Utilities;
 using System;
 using System.CodeDom;
@@ -21,7 +22,7 @@ namespace Shared.Messages
 
         public ChatroomAcceptanceMessage()
         {
-            Id = 3;
+            Id = (int)MessageIds.ChatroomAcceptance;
             Accepted = 0;
             MotD = "";
             WelcomeMessage = "";
