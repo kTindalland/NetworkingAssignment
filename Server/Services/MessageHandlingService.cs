@@ -46,14 +46,11 @@ namespace Server.Services
 
         private void TakeAction(HeartbeatMessage message, Socket socket)
         {
-            
-
             lock (_userTracker.TrackerLock)
             {
-                //_userTracker.Users[socket].MissedHeartbeats = 0;
+                _userTracker.Users[socket].MissedHeartbeats = 0;
 
                 var username = _userTracker.Users[socket].Username;
-                Console.WriteLine($"Heartbeat from {username}");
             }
             
         }

@@ -74,7 +74,6 @@ namespace NetworkingAssignment.Services
 
                     await Task.Run(() => _messageHandlingService.HandleMessage(actualMessage, socket));
 
-                    //Console.WriteLine($"> Message received: username {resultingMessage.GetType()}");
 
                     await flushTask;
                 }
@@ -82,6 +81,7 @@ namespace NetworkingAssignment.Services
                 if (_queueService.MessageAvailible)
                 {
                     // Message to send
+                    
                     IMessage message;
                     lock (_queueService.QueueLock)
                     {
@@ -96,10 +96,9 @@ namespace NetworkingAssignment.Services
 
             }
 
-            client.Close();
-
-            Debug.WriteLine("Got here!");
             _eventAggregator.GetEvent<KillHeartbeatEvent>().Publish();
+            client.Close();
+            
 
 
         }

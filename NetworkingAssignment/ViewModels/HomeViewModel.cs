@@ -1,7 +1,10 @@
 ﻿using Interfaces.Services;
+using NetworkingAssignment.Events;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using Shared.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +21,7 @@ namespace NetworkingAssignment.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly INetworkCredentialsPatternValidationService _patternValidationService;
         private readonly INetworkClientService _clientService;
+        private readonly IEventAggregator _eventAggregator;
         private string _ipAddress;
         private string _port;
         private string _username;
@@ -79,14 +83,30 @@ namespace NetworkingAssignment.ViewModels
         public HomeViewModel(
             IRegionManager regionManager,
             INetworkCredentialsPatternValidationService patternValidationService,
-            INetworkClientService clientService)
+            INetworkClientService clientService,
+            IEventAggregator eventAggregator)
         {
             _regionManager = regionManager;
             _patternValidationService = patternValidationService;
             _clientService = clientService;
+            _eventAggregator = eventAggregator;
             ConnectCommand = new DelegateCommand(Connect);
             ErrorMessage = "";
 
+
+            _eventAggregator.GetEvent<ChatroomAcceptanceEvent>().Subscribe(OnChatroomAcceptance);
+        }
+
+        private void OnChatroomAcceptance(ChatroomAcceptanceMessage payload)
+        {
+            if (payload.Accepted == 1)
+            {
+                _regionManager.RequestNavigate("MainRegion", "ChatRoom");
+            }
+            else
+            {
+                ErrorMessage = payload.ReasonForDecline;
+            }
         }
 
         private void Connect()

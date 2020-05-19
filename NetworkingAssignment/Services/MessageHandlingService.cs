@@ -58,22 +58,22 @@ namespace NetworkingAssignment.Services
         {
             // Set heartbeat going
 
-            lock(_heartbeatLock)
-            {
-                _alive = true;
-            }
-            Task.Run(() => Heartbeater());
-            Debug.WriteLine("It worked!");
+            _eventAggregator.GetEvent<ChatroomAcceptanceEvent>().Publish(message);
 
-            // Region manager doesn't work :(
-            // nothing to stop event aggregator though...
+            if (message.Accepted == 1)
+            {
+                lock (_heartbeatLock)
+                {
+                    _alive = true;
+                }
+                Task.Run(() => Heartbeater());
+            }
         }
 
         private async Task Heartbeater()
         {
             while (true)
             {
-                Debug.WriteLine("Thump thump");
                 lock (_heartbeatLock)
                 {
                     if (!_alive)

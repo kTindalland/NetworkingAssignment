@@ -225,19 +225,8 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
                 if (_listener.Pending())
                 {
                     var socket = await _listener.AcceptSocketAsync();
-                    Console.WriteLine("Got socket");
                     ProcessClient(socket);
                 }
-
-                //lock (_userTracker.TrackerLock)
-                //{
-                //    Console.Write("> active users: ");
-                //    foreach (var key in _userTracker.Users.Keys)
-                //    {
-                //        Console.Write($"{_userTracker.Users[key].Username}, ");
-                //    }
-                //    Console.Write("\n");
-                //}
                 
 
                 Thread.Sleep(50);
@@ -257,7 +246,6 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
             // Wait for message
             while (!(socket.Poll(0, SelectMode.SelectRead) && socket.Available == 0) && !breakout)
             {
-                Console.WriteLine("I'm running!!!");
                 if (stream.DataAvailable)
                 {
                     int twoKiloBytes = 2048;
@@ -272,14 +260,7 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
                     {
                         Task.Run(() => _messageHandlingService.HandleMessage(actualMessage, socket, stream));
                     }
-                    
-
-
-                    //Console.WriteLine($"> Message received: username {resultingMessage.GetType()}");
-
-                    //await flushTask;
                 }
-                Console.WriteLine("Got to the lock!!");
                 lock (_userTracker.TrackerLock)
                 {
                     if (_userTracker.Users.ContainsKey(socket))
@@ -314,7 +295,6 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
                     foreach (var socket in _userTracker.Users.Keys)
                     {
                         _userTracker.Users[socket].MissedHeartbeats++;
-                        Console.WriteLine($"{socket.LocalEndPoint} : {_userTracker.Users[socket].MissedHeartbeats}");
                     }
                 }
 

@@ -32,7 +32,7 @@ namespace NetworkingAssignment
             containerRegistry.Register<INetworkCredentialsPatternValidationService, NetworkCredentialsPatternValidationService>();
             containerRegistry.RegisterSingleton<INetworkClientService, NetworkClientService>();
             containerRegistry.RegisterSingleton<IMessageHandlingService, MessageHandlingService>();
-            containerRegistry.Register<IMessageQueueService, MessageQueueService>();
+            containerRegistry.RegisterSingleton<IMessageQueueService, MessageQueueService>();
             containerRegistry.Register<IMessageDecoderService, MessageDecoderService>();
         }
     }
