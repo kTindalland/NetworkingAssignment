@@ -16,7 +16,7 @@ namespace Server
     public class Server
     {
         private readonly INetworkCredentialsPatternValidationService _patternValidationService;
-        private readonly IMessageHandlingService _messageHandlingService;
+        private readonly IServerMessageHandlingService _messageHandlingService;
         private readonly IUserTrackerService _userTracker;
         private readonly string _version = "0.1";
 
@@ -29,7 +29,7 @@ namespace Server
 
         public Server(
             INetworkCredentialsPatternValidationService patternValidationService,
-            IMessageHandlingService messageHandlingService,
+            IServerMessageHandlingService messageHandlingService,
             IUserTrackerService userTracker)
         {
             _patternValidationService = patternValidationService;
@@ -138,6 +138,7 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
             }
 
             Task.Run(ListenLoop);
+            Task.Run(IncrementHeartbeats);
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("> Listening");
@@ -228,15 +229,15 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
                     ProcessClient(socket);
                 }
 
-                lock (_userTracker.TrackerLock)
-                {
-                    Console.Write("> active users: ");
-                    foreach (var key in _userTracker.Users.Keys)
-                    {
-                        Console.Write($"{_userTracker.Users[key].Username}, ");
-                    }
-                    Console.Write("\n");
-                }
+                //lock (_userTracker.TrackerLock)
+                //{
+                //    Console.Write("> active users: ");
+                //    foreach (var key in _userTracker.Users.Keys)
+                //    {
+                //        Console.Write($"{_userTracker.Users[key].Username}, ");
+                //    }
+                //    Console.Write("\n");
+                //}
                 
 
                 Thread.Sleep(50);
@@ -251,35 +252,74 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
         private async Task ProcessClient(Socket socket)
         {
             var stream = new NetworkStream(socket);
+            var breakout = false;
 
             // Wait for message
-            while (!(socket.Poll(0, SelectMode.SelectRead) && socket.Available == 0))
+            while (!(socket.Poll(0, SelectMode.SelectRead) && socket.Available == 0) && !breakout)
             {
+                Console.WriteLine("I'm running!!!");
                 if (stream.DataAvailable)
                 {
                     int twoKiloBytes = 2048;
                     byte[] buffer = new byte[twoKiloBytes];
 
                     int messageLength = await stream.ReadAsync(buffer, 0, twoKiloBytes);
-                    var flushTask = stream.FlushAsync();
+                    await stream.FlushAsync();
 
                     byte[] actualMessage = buffer.Take(messageLength).ToArray();
 
                     lock(_messageLock)
                     {
-                        Task.Run(() => _messageHandlingService.HandleMessage(actualMessage, socket));
+                        Task.Run(() => _messageHandlingService.HandleMessage(actualMessage, socket, stream));
                     }
                     
 
+
                     //Console.WriteLine($"> Message received: username {resultingMessage.GetType()}");
 
-                    await flushTask;
+                    //await flushTask;
+                }
+                Console.WriteLine("Got to the lock!!");
+                lock (_userTracker.TrackerLock)
+                {
+                    if (_userTracker.Users.ContainsKey(socket))
+                    {
+                        var missedBeats = _userTracker.Users[socket].MissedHeartbeats;
+                        if (missedBeats >= 5)
+                        {
+                            breakout = true;
+                        }
+                    }
+                    
                 }
             }
 
             socket.Close();
             _userTracker.Users.Remove(socket);
 
+        }
+
+        private async Task IncrementHeartbeats()
+        {
+            bool running = !_exitListening;
+            while (running)
+            {
+                lock (_lock)
+                {
+                    if (_exitListening) running = false;
+                }
+
+                lock(_userTracker.TrackerLock)
+                {
+                    foreach (var socket in _userTracker.Users.Keys)
+                    {
+                        _userTracker.Users[socket].MissedHeartbeats++;
+                        Console.WriteLine($"{socket.LocalEndPoint} : {_userTracker.Users[socket].MissedHeartbeats}");
+                    }
+                }
+
+                Thread.Sleep(1000);
+            }
         }
     }
 }

@@ -12,4 +12,9 @@ namespace Shared.Enumerations
         JoinChatroom = 2,
         ChatroomAcceptance = 3
     }
+
+    // REMEMBER TO PUT NEW MESSAGE IN DECODER AFTER
+
+
+    // IDIOT
 }

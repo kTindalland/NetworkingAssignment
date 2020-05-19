@@ -14,5 +14,6 @@ namespace Server.Structures
         public string Username { get; set; }
         public int MissedHeartbeats { get; set; }
 
+
     }
 }

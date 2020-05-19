@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Server.Services
 {
     // SERVER MESSAGE HANDLING
-    public class MessageHandlingService : IMessageHandlingService
+    public class MessageHandlingService : IServerMessageHandlingService
     {
         private readonly IMessageDecoderService _messageDecoder;
         private readonly IUserTrackerService _userTracker;
@@ -24,7 +24,7 @@ namespace Server.Services
             _userTracker = userTracker;
         }
 
-        public void HandleMessage(byte[] message, Socket socket)
+        public void HandleMessage(byte[] message, Socket socket, NetworkStream stream)
         {
             var decodedMessage = _messageDecoder.DecodeMessage(message);
 
@@ -36,7 +36,7 @@ namespace Server.Services
                     break;
 
                 case MessageIds.JoinChatroom:
-                    TakeAction((JoinChatroomMessage)decodedMessage, socket);
+                    TakeAction((JoinChatroomMessage)decodedMessage, socket, stream);
                     break;
 
                 default:
@@ -50,7 +50,7 @@ namespace Server.Services
 
             lock (_userTracker.TrackerLock)
             {
-                _userTracker.Users[socket].MissedHeartbeats = 0;
+                //_userTracker.Users[socket].MissedHeartbeats = 0;
 
                 var username = _userTracker.Users[socket].Username;
                 Console.WriteLine($"Heartbeat from {username}");
@@ -58,7 +58,7 @@ namespace Server.Services
             
         }
 
-        private void TakeAction(JoinChatroomMessage message, Socket socket)
+        private void TakeAction(JoinChatroomMessage message, Socket socket, NetworkStream stream)
         {
             var newUser = new User()
             {
@@ -71,6 +71,11 @@ namespace Server.Services
             {
                 _userTracker.Users.Add(socket, newUser);
             }
+
+            // Send accept message
+            var msg = new ChatroomAcceptanceMessage() { Accepted = 1, MotD = "MotD", WelcomeMessage = "Welcome to the server!" };
+            var buffer = msg.Pack();
+            stream.Write(buffer, 0, buffer.Length);
             
         }
     }

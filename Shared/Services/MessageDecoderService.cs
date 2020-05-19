@@ -28,6 +28,10 @@ namespace Shared.Services
                     result = new JoinChatroomMessage();
                     break;
 
+                case MessageIds.ChatroomAcceptance:
+                    result = new ChatroomAcceptanceMessage();
+                    break;
+
                 default:
                     result = new HeartbeatMessage();
                     break;

@@ -13,10 +13,12 @@ namespace Shared.Services
         private Queue<IMessage> _messageQueue;
 
         public bool MessageAvailible => _messageQueue.Count > 0;
+        public object QueueLock { get; }
 
         public MessageQueueService()
         {
             _messageQueue = new Queue<IMessage>();
+            QueueLock = new object();
         }
 
         public IMessage PopMessage()

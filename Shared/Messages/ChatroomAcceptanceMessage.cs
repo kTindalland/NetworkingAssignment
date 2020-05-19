@@ -25,6 +25,7 @@ namespace Shared.Messages
             Accepted = 0;
             MotD = "";
             WelcomeMessage = "";
+            ReasonForDecline = "";
         }
 
         public byte[] Pack()

@@ -10,6 +10,7 @@ namespace Interfaces.Services
     public interface IMessageQueueService
     {
         bool MessageAvailible { get; }
+        object QueueLock { get; }
         void QueueMessage(IMessage message);
         IMessage PopMessage();
 

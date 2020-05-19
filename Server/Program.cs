@@ -30,7 +30,7 @@ namespace Server
             container.RegisterType<Server>();
             container.RegisterType<INetworkCredentialsPatternValidationService, NetworkCredentialsPatternValidationService>();
             container.RegisterType<IMessageDecoderService, MessageDecoderService>();
-            container.RegisterType<IMessageHandlingService, MessageHandlingService>();
+            container.RegisterType<IServerMessageHandlingService, MessageHandlingService>();
             container.RegisterSingleton<IUserTrackerService, UserTrackerService>();
 
 

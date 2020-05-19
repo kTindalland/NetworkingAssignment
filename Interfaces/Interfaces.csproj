@@ -44,8 +44,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IMessageDecoderService.cs" />
     <Compile Include="Services\IMessageHandlingService.cs" />
+    <Compile Include="Services\IMessageQueueService.cs" />
     <Compile Include="Services\INetworkClientService.cs" />
     <Compile Include="Services\INetworkCredentialsPatternValidationService.cs" />
+    <Compile Include="Services\IServerMessageHandlingService.cs" />
     <Compile Include="Services\IUserTrackerService.cs" />
     <Compile Include="Shared\IMessage.cs" />
     <Compile Include="Structures\IUser.cs" />

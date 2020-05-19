@@ -30,7 +30,10 @@ namespace NetworkingAssignment
             containerRegistry.RegisterForNavigation<ChatRoomView>("ChatRoom");
 
             containerRegistry.Register<INetworkCredentialsPatternValidationService, NetworkCredentialsPatternValidationService>();
-            containerRegistry.Register<INetworkClientService, NetworkClientService>();
+            containerRegistry.RegisterSingleton<INetworkClientService, NetworkClientService>();
+            containerRegistry.RegisterSingleton<IMessageHandlingService, MessageHandlingService>();
+            containerRegistry.Register<IMessageQueueService, MessageQueueService>();
+            containerRegistry.Register<IMessageDecoderService, MessageDecoderService>();
         }
     }
 }
