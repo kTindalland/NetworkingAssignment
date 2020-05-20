@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IInformationHoldingService.cs" />
     <Compile Include="Services\IMessageHandlingService.cs" />
     <Compile Include="Services\IMessageQueueService.cs" />
     <Compile Include="Services\INetworkClientService.cs" />

@@ -99,6 +99,7 @@
     </ApplicationDefinition>
     <Compile Include="Events\ChatroomAcceptanceEvent.cs" />
     <Compile Include="Events\KillHeartbeatEvent.cs" />
+    <Compile Include="Services\InformationHoldingService.cs" />
     <Compile Include="Services\MessageHandlingService.cs" />
     <Compile Include="Services\NetworkClientService.cs" />
     <Compile Include="ViewModels\ChatRoomViewModel.cs" />

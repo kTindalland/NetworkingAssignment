@@ -64,13 +64,26 @@ namespace Server.Services
                 MissedHeartbeats = 0
             };
 
-            lock(_userTracker.TrackerLock)
+
+            // Send accept/decline message
+            var msg = new ChatroomAcceptanceMessage() { Accepted = 1, MotD = "MotD", WelcomeMessage = "Welcome to the server!" };
+
+            lock (_userTracker.TrackerLock)
             {
-                _userTracker.Users.Add(socket, newUser);
+                if (_userTracker.Users.Any(r => r.Value.Username == message.Username)) {
+                    msg.Accepted = 0;
+                    msg.ReasonForDecline = "Already a user with that username.";
+                }
+                else
+                {
+                    _userTracker.Users.Add(socket, newUser);
+                }
+
+                msg.ActiveUsers = _userTracker.Users.Select(r => r.Value.Username).ToList();
             }
 
-            // Send accept message
-            var msg = new ChatroomAcceptanceMessage() { Accepted = 1, MotD = "MotD", WelcomeMessage = "Welcome to the server!" };
+            
+
             var buffer = msg.Pack();
             stream.Write(buffer, 0, buffer.Length);
             

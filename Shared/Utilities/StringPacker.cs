@@ -36,5 +36,36 @@ namespace Shared.Utilities
 
             return result;
         }
+
+        public static byte[] PackList(List<string> list)
+        {
+            var listLength = list.Count;
+
+            var packedBytes = new List<byte>();
+            packedBytes.AddRange(BitConverter.GetBytes(listLength));
+
+            foreach(var item in list)
+            {
+                packedBytes.AddRange(PackString(item));
+            }
+
+            return packedBytes.ToArray();
+        }
+
+        public static List<string> UnpackList(byte[] encodedList, out byte[] remainingBuffer)
+        {
+            // Lets unpack 'em!
+            var length = BitConverter.ToInt32(encodedList.Take(4).ToArray(), 0); // not sure if i need the take 4 but just to be safe
+
+            var result = new List<string>();
+            remainingBuffer = encodedList.Skip(4).ToArray();
+
+            for(int i = 0; i < length; i++)
+            {
+                result.Add(UnpackString(remainingBuffer, out remainingBuffer));
+            }
+
+            return result;
+        }
     }
 }

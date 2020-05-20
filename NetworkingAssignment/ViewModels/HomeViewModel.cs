@@ -23,6 +23,7 @@ namespace NetworkingAssignment.ViewModels
         private readonly INetworkCredentialsPatternValidationService _patternValidationService;
         private readonly INetworkClientService _clientService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IInformationHoldingService _informationHolding;
         private string _ipAddress;
         private string _port;
         private string _username;
@@ -86,12 +87,14 @@ namespace NetworkingAssignment.ViewModels
             IRegionManager regionManager,
             INetworkCredentialsPatternValidationService patternValidationService,
             INetworkClientService clientService,
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator,
+            IInformationHoldingService informationHolding)
         {
             _regionManager = regionManager;
             _patternValidationService = patternValidationService;
             _clientService = clientService;
             _eventAggregator = eventAggregator;
+            _informationHolding = informationHolding;
             ConnectCommand = new DelegateCommand(Connect);
             ErrorMessage = "";
 
@@ -104,6 +107,7 @@ namespace NetworkingAssignment.ViewModels
         {
             if (payload.Accepted == 1)
             {
+                _informationHolding.ActiveUsers = payload.ActiveUsers;
                 _mainDispatcher.Invoke(() => { _regionManager.RequestNavigate("MainRegion", "ChatRoom"); });
             }
             else

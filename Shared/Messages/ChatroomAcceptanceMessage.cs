@@ -20,6 +20,8 @@ namespace Shared.Messages
         public string MotD { get; set; }
         public string WelcomeMessage { get; set; }
 
+        public List<string> ActiveUsers { get; set; }
+
         public ChatroomAcceptanceMessage()
         {
             Id = (int)MessageIds.ChatroomAcceptance;
@@ -27,6 +29,7 @@ namespace Shared.Messages
             MotD = "";
             WelcomeMessage = "";
             ReasonForDecline = "";
+            ActiveUsers = new List<string>();
         }
 
         public byte[] Pack()
@@ -36,6 +39,7 @@ namespace Shared.Messages
             bytes.AddRange(StringPacker.PackString(ReasonForDecline));
             bytes.AddRange(StringPacker.PackString(MotD));
             bytes.AddRange(StringPacker.PackString(WelcomeMessage));
+            bytes.AddRange(StringPacker.PackList(ActiveUsers));
 
             return bytes.ToArray();
         }
@@ -48,6 +52,7 @@ namespace Shared.Messages
             ReasonForDecline = StringPacker.UnpackString(bytes.Skip(2).ToArray(), out bytes);
             MotD = StringPacker.UnpackString(bytes, out bytes);
             WelcomeMessage = StringPacker.UnpackString(bytes, out bytes);
+            ActiveUsers = StringPacker.UnpackList(bytes, out bytes);
         }
     }
 }

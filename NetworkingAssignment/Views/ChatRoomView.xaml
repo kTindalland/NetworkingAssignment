@@ -25,10 +25,14 @@
             </MenuItem>
         </Menu>
 
-        <ScrollViewer>
-            <ItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding MyList}">
-
-            </ItemsControl>
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
+            <ListView Grid.Column="1" Grid.Row="1" ItemsSource="{Binding MyList}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </ScrollViewer>
         
 
