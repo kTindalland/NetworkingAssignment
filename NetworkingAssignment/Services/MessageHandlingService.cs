@@ -19,13 +19,13 @@ namespace NetworkingAssignment.Services
 {
     public class MessageHandlingService : IMessageHandlingService
     {
-        private readonly IMessageQueueService _queueService;
+        private readonly IQueueService<IMessage> _queueService;
         private readonly IEventAggregator _eventAggregator;
         private readonly object _heartbeatLock;
         private bool _alive;
 
         public MessageHandlingService(
-            IMessageQueueService queueService,
+            IQueueService<IMessage> queueService,
             IEventAggregator eventAggregator)
         {
             _queueService = queueService;
@@ -45,6 +45,12 @@ namespace NetworkingAssignment.Services
                     decodedMessage = new ChatroomAcceptanceMessage();
                     decodedMessage.Unpack(message);
                     TakeAction((ChatroomAcceptanceMessage)decodedMessage);
+                    break;
+
+                case MessageIds.RegularUpdate:
+                    decodedMessage = new RegularUpdateMessage();
+                    decodedMessage.Unpack(message);
+                    TakeAction((RegularUpdateMessage)decodedMessage);
                     break;
 
                 default:
@@ -68,6 +74,11 @@ namespace NetworkingAssignment.Services
             }
         }
 
+        private void TakeAction(RegularUpdateMessage message)
+        {
+            _eventAggregator.GetEvent<RegularUpdateEvent>().Publish(message);
+        }
+
         private async Task Heartbeater()
         {
             while (true)
@@ -85,7 +96,7 @@ namespace NetworkingAssignment.Services
 
                 lock (_queueService.QueueLock)
                 {
-                    _queueService.QueueMessage(beat);
+                    _queueService.Enqueue(beat);
                 }
 
 

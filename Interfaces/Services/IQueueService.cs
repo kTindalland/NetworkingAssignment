@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Interfaces.Services
 {
-    public interface IMessageQueueService
+    public interface IQueueService<T>
     {
-        bool MessageAvailible { get; }
+        bool ItemAvailable { get; }
         object QueueLock { get; }
-        void QueueMessage(IMessage message);
-        IMessage PopMessage();
+        void Enqueue(T message);
+        T Dequeue();
 
     }
 }

@@ -108,6 +108,7 @@ namespace NetworkingAssignment.ViewModels
             if (payload.Accepted == 1)
             {
                 _informationHolding.ActiveUsers = payload.ActiveUsers;
+                _informationHolding.Username = Username;
                 _mainDispatcher.Invoke(() => { _regionManager.RequestNavigate("MainRegion", "ChatRoom"); });
             }
             else

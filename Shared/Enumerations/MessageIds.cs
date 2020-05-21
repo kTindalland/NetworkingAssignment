@@ -11,7 +11,8 @@ namespace Shared.Enumerations
         Heartbeat = 1,
         JoinChatroom = 2,
         ChatroomAcceptance = 3,
-        RegularUpdate = 4
+        RegularUpdate = 4,
+        SendChat = 5
     }
 
     // REMEMBER TO PUT NEW MESSAGE IN DECODER AFTER

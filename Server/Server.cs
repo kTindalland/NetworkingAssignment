@@ -3,6 +3,7 @@ using Shared.Messages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -18,6 +19,7 @@ namespace Server
         private readonly INetworkCredentialsPatternValidationService _patternValidationService;
         private readonly IServerMessageHandlingService _messageHandlingService;
         private readonly IUserTrackerService _userTracker;
+        private readonly IQueueService<Chat> _chatQueue;
         private readonly string _version = "0.1";
 
         private IPEndPoint _endPoint;
@@ -30,11 +32,13 @@ namespace Server
         public Server(
             INetworkCredentialsPatternValidationService patternValidationService,
             IServerMessageHandlingService messageHandlingService,
-            IUserTrackerService userTracker)
+            IUserTrackerService userTracker,
+            IQueueService<Chat> _chatQueue)
         {
             _patternValidationService = patternValidationService;
             _messageHandlingService = messageHandlingService;
             _userTracker = userTracker;
+            this._chatQueue = _chatQueue;
             _lock = new object();
             _messageLock = new object();
             _exitListening = false;
@@ -315,12 +319,29 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
 
                 var message = new RegularUpdateMessage();
 
-                lock (_userTracker.TrackerLock)
+                lock (_chatQueue.QueueLock)
                 {
-                    
+                    while (_chatQueue.ItemAvailable)
+                    {
+                        message.NewChats.Add(_chatQueue.Dequeue());
+                    }
                 }
 
-                Thread.Sleep(500);
+                List<Stream> streams;
+
+                lock (_userTracker.TrackerLock)
+                {
+                    message.ActiveUsers = _userTracker.Users.Select(r => r.Value.Username).ToList();
+                    streams = _userTracker.Users.Select(r => r.Value.Stream).ToList();
+                }
+
+                var buffer = message.Pack();
+                foreach (var stream in streams)
+                {
+                    stream.Write(buffer, 0, buffer.Length);
+                }
+
+                Thread.Sleep(100);
             }
         }
     }

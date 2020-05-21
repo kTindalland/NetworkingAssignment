@@ -26,7 +26,7 @@
         </Menu>
 
         <ScrollViewer Grid.Row="1" Grid.Column="1">
-            <ListView Grid.Column="1" Grid.Row="1" ItemsSource="{Binding MyList}">
+            <ListView ItemsSource="{Binding MyList}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Label Content="{Binding}" />
@@ -42,8 +42,8 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" Style="{x:Null}" Margin="10" />
-            <Button Grid.Column="1" Margin="20">Send</Button>
+            <TextBox Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" Style="{x:Null}" Margin="10" Text="{Binding Text}" />
+            <Button Grid.Column="1" Margin="20" Command="{Binding SendChatCommand}">Send</Button>
         </Grid>
         
 

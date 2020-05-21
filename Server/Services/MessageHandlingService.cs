@@ -16,10 +16,14 @@ namespace Server.Services
     public class MessageHandlingService : IServerMessageHandlingService
     {
         private readonly IUserTrackerService _userTracker;
+        private readonly IQueueService<Chat> _chatQueue;
 
-        public MessageHandlingService(IUserTrackerService userTracker)
+        public MessageHandlingService(
+            IUserTrackerService userTracker,
+            IQueueService<Chat> chatQueue)
         {
             _userTracker = userTracker;
+            _chatQueue = chatQueue;
         }
 
         public void HandleMessage(byte[] message, Socket socket, NetworkStream stream)
@@ -37,6 +41,12 @@ namespace Server.Services
                     decodedMessage = new JoinChatroomMessage();
                     decodedMessage.Unpack(message);
                     TakeAction((JoinChatroomMessage)decodedMessage, socket, stream);
+                    break;
+
+                case MessageIds.SendChat:
+                    decodedMessage = new SendChatMessage();
+                    decodedMessage.Unpack(message);
+                    TakeAction((SendChatMessage)decodedMessage);
                     break;
 
                 default:
@@ -60,6 +70,7 @@ namespace Server.Services
             var newUser = new User()
             {
                 Socket = socket,
+                Stream = stream,
                 Username = message.Username,
                 MissedHeartbeats = 0
             };
@@ -87,6 +98,17 @@ namespace Server.Services
             var buffer = msg.Pack();
             stream.Write(buffer, 0, buffer.Length);
             
+        }
+
+        private void TakeAction(SendChatMessage message)
+        {
+            var newChat = new Chat()
+            {
+                Username = message.Username,
+                Message = message.Message
+            };
+
+            _chatQueue.Enqueue(newChat);
         }
     }
 }

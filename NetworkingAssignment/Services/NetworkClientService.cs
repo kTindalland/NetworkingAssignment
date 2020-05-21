@@ -19,12 +19,12 @@ namespace NetworkingAssignment.Services
 {
     public class NetworkClientService : INetworkClientService
     {
-        private readonly IMessageQueueService _queueService;
+        private readonly IQueueService<IMessage> _queueService;
         private readonly IMessageHandlingService _messageHandlingService;
         private readonly IEventAggregator _eventAggregator;
 
         public NetworkClientService(
-            IMessageQueueService queueService,
+            IQueueService<IMessage> queueService,
             IMessageHandlingService messageHandlingService,
             IEventAggregator eventAggregator)
         {
@@ -56,7 +56,7 @@ namespace NetworkingAssignment.Services
             var msg = new JoinChatroomMessage() { Username = username };
             lock (_queueService.QueueLock)
             {
-                _queueService.QueueMessage(msg);
+                _queueService.Enqueue(msg);
             }
 
             var socket = client.Client;
@@ -78,14 +78,14 @@ namespace NetworkingAssignment.Services
                     await flushTask;
                 }
 
-                if (_queueService.MessageAvailible)
+                if (_queueService.ItemAvailable)
                 {
                     // Message to send
                     
                     IMessage message;
                     lock (_queueService.QueueLock)
                     {
-                        message = _queueService.PopMessage();
+                        message = _queueService.Dequeue();
                     }
 
                     var bytes = message.Pack();

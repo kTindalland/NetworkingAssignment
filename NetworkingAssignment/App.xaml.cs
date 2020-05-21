@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Interfaces.Services;
+using Interfaces.Shared;
 using NetworkingAssignment.Services;
 using NetworkingAssignment.Views;
 using Prism.Ioc;
@@ -32,7 +33,7 @@ namespace NetworkingAssignment
             containerRegistry.Register<INetworkCredentialsPatternValidationService, NetworkCredentialsPatternValidationService>();
             containerRegistry.RegisterSingleton<INetworkClientService, NetworkClientService>();
             containerRegistry.RegisterSingleton<IMessageHandlingService, MessageHandlingService>();
-            containerRegistry.RegisterSingleton<IMessageQueueService, MessageQueueService>();
+            containerRegistry.RegisterSingleton<IQueueService<IMessage>, QueueService<IMessage>>();
             containerRegistry.RegisterSingleton<IInformationHoldingService, InformationHoldingService>();
         }
     }

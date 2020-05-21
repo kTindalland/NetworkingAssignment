@@ -45,8 +45,10 @@
     <Compile Include="Messages\ChatroomAcceptanceMessage.cs" />
     <Compile Include="Messages\HeartbeatMessage.cs" />
     <Compile Include="Messages\JoinChatroomMessage.cs" />
+    <Compile Include="Messages\RegularUpdateMessage.cs" />
+    <Compile Include="Messages\SendChatMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\MessageQueueService.cs" />
+    <Compile Include="Services\QueueService.cs" />
     <Compile Include="Services\NetworkCredentialsPatternValidationService.cs" />
     <Compile Include="Utilities\StringPacker.cs" />
   </ItemGroup>

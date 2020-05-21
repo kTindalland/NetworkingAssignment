@@ -9,5 +9,6 @@ namespace Interfaces.Services
     public interface IInformationHoldingService
     {
         List<string> ActiveUsers { get; set; }
+        string Username { get; set; }
     }
 }

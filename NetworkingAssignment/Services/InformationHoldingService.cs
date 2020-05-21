@@ -10,6 +10,7 @@ namespace NetworkingAssignment.Services
     public class InformationHoldingService : IInformationHoldingService
     {
         public List<string> ActiveUsers { get; set; }
+        public string Username { get; set; }
 
         public InformationHoldingService()
         {

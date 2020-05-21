@@ -8,6 +8,7 @@ using Unity;
 using Unity.Injection;
 using Shared.Services;
 using Server.Services;
+using Shared.Messages;
 
 namespace Server
 {
@@ -31,6 +32,7 @@ namespace Server
             container.RegisterType<INetworkCredentialsPatternValidationService, NetworkCredentialsPatternValidationService>();
             container.RegisterType<IServerMessageHandlingService, MessageHandlingService>();
             container.RegisterSingleton<IUserTrackerService, UserTrackerService>();
+            container.RegisterSingleton<IQueueService<Chat>, QueueService<Chat>>();
 
 
             // Resolve server
