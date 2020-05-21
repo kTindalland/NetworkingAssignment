@@ -139,6 +139,7 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
 
             Task.Run(ListenLoop);
             Task.Run(IncrementHeartbeats);
+            Task.Run(SendUpdates);
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("> Listening");
@@ -299,6 +300,27 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
                 }
 
                 Thread.Sleep(1000);
+            }
+        }
+
+        private async Task SendUpdates()
+        {
+            bool running = !_exitListening;
+            while (running)
+            {
+                lock (_lock)
+                {
+                    if (_exitListening) running = false;
+                }
+
+                var message = new RegularUpdateMessage();
+
+                lock (_userTracker.TrackerLock)
+                {
+                    
+                }
+
+                Thread.Sleep(500);
             }
         }
     }
