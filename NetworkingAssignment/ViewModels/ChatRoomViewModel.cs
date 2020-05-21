@@ -22,18 +22,31 @@ namespace NetworkingAssignment.ViewModels
 
 		public ICommand SendChatCommand { get; set; }
 
-		private List<string> _myList;
+		private List<string> _messages;
 		
 
-		public List<string> MyList
+		public List<string> Messages
 		{
-			get { return _myList; }
+			get { return _messages; }
 			set 
 			{
-				_myList = value;
+				_messages = value;
 				RaisePropertyChanged();
 			}
 		}
+
+		private List<string> _activeUsers;
+
+		public List<string> ActiveUsers
+		{
+			get { return _activeUsers; }
+			set
+			{ 
+				_activeUsers = value;
+				RaisePropertyChanged();
+			}
+		}
+
 
 		private string _text;
 
@@ -58,7 +71,8 @@ namespace NetworkingAssignment.ViewModels
 			_queueService = queueService;
 			_eventAggregator.GetEvent<RegularUpdateEvent>().Subscribe(OnRegularUpdate);
 
-			MyList = new List<string>();
+			Messages = new List<string>();
+			ActiveUsers = _informationHolding.ActiveUsers;
 
 			SendChatCommand = new DelegateCommand(SendChat);
 		}
@@ -79,15 +93,19 @@ namespace NetworkingAssignment.ViewModels
 			if (payload.NewChats.Count > 0)
 			{
 				var tempList = new List<string>();
-				tempList.AddRange(MyList);
+				tempList.AddRange(Messages);
 
 				foreach (var chat in payload.NewChats)
 				{
 					tempList.Add($"{chat.Username} : {chat.Message}");
 				}
-				MyList = tempList;
+				Messages = tempList;
 			}
 			
+			if (payload.ActiveUsers.Count != ActiveUsers.Count)
+			{
+				ActiveUsers = payload.ActiveUsers;
+			}
 		}
 	}
 }

@@ -12,7 +12,8 @@ namespace Shared.Enumerations
         JoinChatroom = 2,
         ChatroomAcceptance = 3,
         RegularUpdate = 4,
-        SendChat = 5
+        SendChat = 5,
+        Disconnect = 6
     }
 
     // REMEMBER TO PUT NEW MESSAGE IN DECODER AFTER

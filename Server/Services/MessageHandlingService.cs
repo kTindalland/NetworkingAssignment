@@ -58,9 +58,11 @@ namespace Server.Services
         {
             lock (_userTracker.TrackerLock)
             {
-                _userTracker.Users[socket].MissedHeartbeats = 0;
-
-                var username = _userTracker.Users[socket].Username;
+                if (_userTracker.Users.ContainsKey(socket))
+                {
+                    _userTracker.Users[socket].MissedHeartbeats = 0;
+                }
+                
             }
             
         }

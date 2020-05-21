@@ -96,6 +96,8 @@ namespace NetworkingAssignment.Services
 
             }
 
+            Debug.WriteLine("This is it chief");
+
             _eventAggregator.GetEvent<KillHeartbeatEvent>().Publish();
             client.Close();
             

@@ -214,6 +214,30 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
             {
                 _exitListening = true;
             }
+
+            lock (_userTracker.TrackerLock)
+            {
+                //var streams = _userTracker.Users.Values.Select(r => r.Stream).ToList();
+
+                //var disconnectMsg = new DisconnectMessage();
+                //var buffer = disconnectMsg.Pack();
+                //foreach(var stream in streams)
+                //{
+                //    stream.Write(buffer, 0, buffer.Length);
+                //}
+
+                var sockets = _userTracker.Users.Values.Select(r => r.Socket);
+
+                foreach (var socket in sockets)
+                {
+                    socket.Close();
+                }
+
+                _userTracker.Users = new Dictionary<Socket, Interfaces.Structures.IUser>();
+            }
+
+
+
             Thread.Sleep(100);
         }
 
@@ -237,10 +261,11 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
                 Thread.Sleep(50);
             }
 
-            
 
             Console.WriteLine("> Stopped listening.");
+            
             _listener.Stop();
+            
         }
 
         private async Task ProcessClient(Socket socket)
@@ -251,6 +276,14 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
             // Wait for message
             while (!(socket.Poll(0, SelectMode.SelectRead) && socket.Available == 0) && !breakout)
             {
+                lock (_lock)
+                {
+                    if (_exitListening)
+                    {
+                        break;
+                    }
+                }
+
                 if (stream.DataAvailable)
                 {
                     int twoKiloBytes = 2048;
@@ -343,6 +376,7 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
 
                 Thread.Sleep(100);
             }
+
         }
     }
 }
