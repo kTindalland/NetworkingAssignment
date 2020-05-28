@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NetworkingAssignment.Views"
              mc:Ignorable="d" 
+             xmlns:behaviours="clr-namespace:NetworkingAssignment.Behaviours"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
@@ -21,29 +23,36 @@
 
         <Menu Grid.ColumnSpan="2" Style="{x:Null}">
             <MenuItem Header="_Connectivity" Style="{x:Null}">
-                <MenuItem Header="_Disconnect" Style="{x:Null}" />
+                <MenuItem Header="_Disconnect" Style="{x:Null}" Command="{Binding DisconnectCommand}" />
             </MenuItem>
         </Menu>
 
-        <ScrollViewer Grid.Row="1" Grid.Column="1">
-            <ListView ItemsSource="{Binding Messages}">
-                <ListView.ItemTemplate>
+        <!--<ScrollViewer Grid.Row="1" Grid.Column="1">-->
+            <ListBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Messages}" SelectedIndex="{Binding SelectedIndex}">
+                <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Label Content="{Binding}" />
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </ScrollViewer>
+                </ListBox.ItemTemplate>
+                <i:Interaction.Behaviors>
+                    <behaviours:ListBoxScrollIntoViewBehavior/>
+                </i:Interaction.Behaviors>
+        </ListBox>
+        <!--</ScrollViewer>-->
 
-        <ScrollViewer Grid.Row="1" Grid.Column="0">
-            <ListView ItemsSource="{Binding ActiveUsers}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Label Content="{Binding}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </ScrollViewer>
+        <StackPanel Grid.Row="1" Grid.Column="0">
+            <Label>Active Users</Label>
+            <ScrollViewer >
+                <ListView ItemsSource="{Binding ActiveUsers}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
+        </StackPanel>
+        
 
         <Grid Grid.Row="2" Grid.Column="1">
             <Grid.ColumnDefinitions>

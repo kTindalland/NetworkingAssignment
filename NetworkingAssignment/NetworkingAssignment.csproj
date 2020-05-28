@@ -97,6 +97,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviours\ListBoxScrollIntoViewBehavior.cs" />
     <Compile Include="Events\ChatroomAcceptanceEvent.cs" />
     <Compile Include="Events\KillHeartbeatEvent.cs" />
     <Compile Include="Events\RegularUpdateEvent.cs" />

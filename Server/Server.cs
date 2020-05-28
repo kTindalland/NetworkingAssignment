@@ -141,6 +141,11 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
                 _exitListening = false;
             }
 
+            lock (_userTracker.TrackerLock)
+            {
+                _userTracker.Users = new Dictionary<Socket, Interfaces.Structures.IUser>();
+            }
+
             Task.Run(ListenLoop);
             Task.Run(IncrementHeartbeats);
             Task.Run(SendUpdates);
@@ -217,23 +222,17 @@ ZZZZZZZZZZZZZZZZZZZ    ooooooooooo       ddddddddd   ddddd iiiiiiii   aaaaaaaaaa
 
             lock (_userTracker.TrackerLock)
             {
-                //var streams = _userTracker.Users.Values.Select(r => r.Stream).ToList();
-
-                //var disconnectMsg = new DisconnectMessage();
-                //var buffer = disconnectMsg.Pack();
-                //foreach(var stream in streams)
-                //{
-                //    stream.Write(buffer, 0, buffer.Length);
-                //}
-
-                var sockets = _userTracker.Users.Values.Select(r => r.Socket);
-
-                foreach (var socket in sockets)
+                if (_userTracker.Users.Count > 0)
                 {
-                    socket.Close();
-                }
+                    var sockets = _userTracker.Users.Values.Select(r => r.Socket).ToList();
 
-                _userTracker.Users = new Dictionary<Socket, Interfaces.Structures.IUser>();
+                    foreach (var socket in sockets)
+                    {
+                        socket.Close();
+                    }
+
+                }
+                
             }
 
 

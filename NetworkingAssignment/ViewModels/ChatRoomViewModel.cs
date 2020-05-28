@@ -4,13 +4,16 @@ using NetworkingAssignment.Events;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 using Shared.Messages;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace NetworkingAssignment.ViewModels
 {
@@ -19,13 +22,16 @@ namespace NetworkingAssignment.ViewModels
 		private readonly IEventAggregator _eventAggregator;
 		private readonly IInformationHoldingService _informationHolding;
 		private readonly IQueueService<IMessage> _queueService;
+		private readonly IRegionManager _regionManager;
 
 		public ICommand SendChatCommand { get; set; }
+		public ICommand DisconnectCommand { get; set; }
 
-		private List<string> _messages;
+		private readonly Dispatcher _dispatcher;
+		private ObservableCollection<string> _messages;
 		
 
-		public List<string> Messages
+		public ObservableCollection<string> Messages
 		{
 			get { return _messages; }
 			set 
@@ -35,9 +41,9 @@ namespace NetworkingAssignment.ViewModels
 			}
 		}
 
-		private List<string> _activeUsers;
+		private ObservableCollection<string> _activeUsers;
 
-		public List<string> ActiveUsers
+		public ObservableCollection<string> ActiveUsers
 		{
 			get { return _activeUsers; }
 			set
@@ -60,21 +66,40 @@ namespace NetworkingAssignment.ViewModels
 			}
 		}
 
+		private int _selectedIndex;
+
+		public int SelectedIndex
+		{
+			get { return _selectedIndex; }
+			set 
+			{ 
+				_selectedIndex = value;
+				RaisePropertyChanged();
+			}
+		}
+
+
 
 		public ChatRoomViewModel(
 			IEventAggregator eventAggregator,
 			IInformationHoldingService informationHolding,
-			IQueueService<IMessage> queueService)
+			IQueueService<IMessage> queueService,
+			IRegionManager regionManager)
 		{
 			_eventAggregator = eventAggregator;
 			_informationHolding = informationHolding;
 			_queueService = queueService;
+			_regionManager = regionManager;
 			_eventAggregator.GetEvent<RegularUpdateEvent>().Subscribe(OnRegularUpdate);
+			_eventAggregator.GetEvent<KillHeartbeatEvent>().Subscribe(OnKillHeardbeat);
 
-			Messages = new List<string>();
-			ActiveUsers = _informationHolding.ActiveUsers;
+			Messages = new ObservableCollection<string>();
+			ActiveUsers = new ObservableCollection<string>(_informationHolding.ActiveUsers);
 
 			SendChatCommand = new DelegateCommand(SendChat);
+			DisconnectCommand = new DelegateCommand(Disconnect);
+
+			_dispatcher = Dispatcher.CurrentDispatcher;
 		}
 
 		private void SendChat()
@@ -86,26 +111,34 @@ namespace NetworkingAssignment.ViewModels
 			};
 
 			_queueService.Enqueue(newMessage);
+			Text = "";
+		}
+
+		private void Disconnect()
+		{
+			_eventAggregator.GetEvent<KillHeartbeatEvent>().Publish();
 		}
 
 		public void OnRegularUpdate(RegularUpdateMessage payload)
 		{
 			if (payload.NewChats.Count > 0)
 			{
-				var tempList = new List<string>();
-				tempList.AddRange(Messages);
-
 				foreach (var chat in payload.NewChats)
 				{
-					tempList.Add($"{chat.Username} : {chat.Message}");
+					_dispatcher.Invoke(() => { Messages.Add($"{chat.Username} : {chat.Message}"); });
+					SelectedIndex = Messages.Count - 1;
 				}
-				Messages = tempList;
 			}
-			
+
 			if (payload.ActiveUsers.Count != ActiveUsers.Count)
 			{
-				ActiveUsers = payload.ActiveUsers;
+				ActiveUsers = new ObservableCollection<string>(payload.ActiveUsers);
 			}
+		}
+
+		private void OnKillHeardbeat()
+		{
+			_dispatcher.Invoke(() => { _regionManager.RequestNavigate("MainRegion", "Home"); });
 		}
 	}
 }
